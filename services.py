@@ -8,16 +8,19 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 
 
+# функция получения соли
 def get_salt():
     chars = string.ascii_uppercase + string.digits
-    return ''.join(random.choice(chars) for _ in range(2))
+    return ''.join(random.choice(chars) for _ in range(6))
 
 
+# функция получения рандомного пароля
 def get_password():
     chars = string.ascii_uppercase + string.digits
     return ''.join(random.choice(chars) for _ in range(2))
 
 
+# функция получения хэша с солью
 def hash_with_salt(salt, data):
     hash_and_salt = PBKDF2HMAC(
         algorithm=hashes.SHA512(),
@@ -36,4 +39,3 @@ def hash_with_salt(salt, data):
     padded_data = padder.update(data.encode("utf-8")) + padder.finalize()
     encrypted_data = encryptor.update(padded_data) + encryptor.finalize()
     return encrypted_data
-

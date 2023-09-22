@@ -1,21 +1,14 @@
-import uuid
-
-from pydantic import BaseModel
-
+from datetime import datetime
+from sqlalchemy import MetaData, String, Integer, Column, Table, TIMESTAMP
 import services
 
+metadata = MetaData()
 
-class SettingsModel(BaseModel):
-    class Config:
-        orm_mode = True
-
-
-class ShowText(SettingsModel):
-    id: uuid.UUID
-    text: str
-    salt: str
-
-
-class TextObjectCreate(BaseModel):
-    text: str
-    salt: services.get_salt()
+text = Table(
+    'text_table',
+    metadata,
+    Column('id', Integer, primary_key=True),
+    Column('text', String, nullable=False),
+    Column('salt', String, default=services.get_salt),
+    Column('created_at', TIMESTAMP, default=datetime.utcnow)
+)
