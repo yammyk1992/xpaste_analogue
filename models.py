@@ -1,14 +1,17 @@
+import random
+import string
 from datetime import datetime
-from sqlalchemy import MetaData, String, Integer, Column, Table, TIMESTAMP
-import services
+from typing import Optional
 
-metadata = MetaData()
+from pydantic import BaseModel
 
-text = Table(
-    'text_table',
-    metadata,
-    Column('id', Integer, default=None, primary_key=True, autoincrement=True),
-    Column('text', String, nullable=False),
-    Column('salt', String, default=services.get_salt),
-    Column('created_at', TIMESTAMP, default=datetime.utcnow)
-)
+
+def get_salt():
+    chars = string.ascii_uppercase + string.digits
+    return ''.join(random.choice(chars) for _ in range(6))
+
+
+class Text(BaseModel):
+    text: str
+    created_at: Optional[str] = datetime.utcnow()
+    salt: Optional[str] = get_salt()

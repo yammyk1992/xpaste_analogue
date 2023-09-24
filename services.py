@@ -1,19 +1,34 @@
 import random
 import string
-from typing import Any, Sequence
+from typing import AsyncIterator
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
-from sqlalchemy import select, Result, CursorResult, Row, RowMapping
-from sqlalchemy.ext.asyncio import AsyncSession
-from main import Text
+from sqlalchemy import select
 
-def get_salt():
-    chars = string.ascii_uppercase + string.digits
-    return ''.join(random.choice(chars) for _ in range(6))
+from database import get_session, Text as TextDB
+from models import Text
+
+
+async def post_text(get_text: Text) -> Text:
+    async with get_session() as session:
+        text_db_instance = TextDB(text=get_text.text, salt=get_text.salt)
+        session.add(text_db_instance)
+        await session.commit()
+        await session.refresh(text_db_instance)
+        return text_db_instance
+
+
+async def get_text() -> AsyncIterator[Text]:
+    async with get_session() as session:
+        query = await session.execute(select(Text))
+        text_db = query.scalars().all()
+
+        for t in text_db:
+            yield Text(id=t.id, text=t.text, created_at=t.created_at)
 
 
 # функция получения рандомного пароля
@@ -42,16 +57,15 @@ def hash_with_salt(salt, data):
     encrypted_data = encryptor.update(padded_data) + encryptor.finalize()
     return encrypted_data
 
+# async def get_text(session: AsyncSession) -> Sequence[Row | RowMapping | Any]:
+#     result = await session.execute(select(Text).last())
+#     return result.scalars().all()
 
-async def get_text(session: AsyncSession) -> Sequence[Row | RowMapping | Any]:
-    result = await session.execute(select(Text).last())
-    return result.scalars().all()
 
-
-def add_text(session: AsyncSession, text: str):
-
-    from main import Text
-
-    new_text = Text(text=text)
-    session.add(new_text)
-    return new_text
+# def add_text(session: AsyncSession, text: str):
+#
+#     from main import TextForPOST
+#
+#     new_text = TextForPOST(text=text)
+#     session.add(new_text)
+#     return new_text
