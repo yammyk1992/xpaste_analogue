@@ -11,7 +11,13 @@ def get_salt():
     return ''.join(random.choice(chars) for _ in range(6))
 
 
-class Text(BaseModel):
+class TextForPOST(BaseModel):
     text: str
-    created_at: Optional[str] = datetime.utcnow()
     salt: Optional[str] = get_salt()
+
+
+class TextForGET(TextForPOST):
+    text_id: int
+    created_at: Optional[datetime] = datetime.utcnow()
+
+
