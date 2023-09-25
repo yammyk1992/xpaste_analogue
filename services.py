@@ -1,6 +1,6 @@
 import random
 import string
-from typing import AsyncIterator, Collection
+from typing import AsyncIterator, Collection, Container
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -30,14 +30,14 @@ async def get_text() -> AsyncIterator[TextForGET]:
             yield TextForGET(text_id=t.text_id, text=t.text, created_at=t.created_at)
 
 
-# async def delete_text(data_id) -> JSONResponse:
-#     async with get_session() as session:
-#         query = await session.query(TextForGET).where(text_id=data_id)
-#         await session.delete(query)
-#         await session.commit()
-#         return JSONResponse({
-#             "status": '200'}
-#         )
+async def get_text_for_delete():
+    async with get_session() as session:
+        query = await session.execute(select(TextDB.text_id))
+        text_db = query.scalars().all()
+        if len(text_db) > 0:
+            return text_db[-1]
+        else:
+            return 0
 
 
 # функция получения рандомного пароля

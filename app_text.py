@@ -1,10 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy import select
 from starlette.responses import JSONResponse
 
 import models
+import services
 from models import TextForPOST
 from services import post_text, get_text
-from database import Text as TextDB
+from database import Text as TextDB, get_session
 
 app = FastAPI(title="APP TEXT", description="APP with ADD Text")
 
@@ -19,7 +21,7 @@ async def get_last_text():
                                 "created_at": str(t.created_at)
                             }
                             async for t in data
-                        ][-1])
+                        ])
 
 
 @app.post("/", name="Post Text", tags=["CREATE TEXT"])
@@ -32,13 +34,12 @@ async def add_text(item: TextForPOST):
     })
 
 
-# @app.delete("/")
-# async def delete_by_id() -> JSONResponse:
-#     data = get_text()
-#     return JSONResponse([
-#                             {
-#                                 "Status": "200",
-#                                 "text_id": delete_text(int(t.text_id))
-#                             }
-#                             async for t in data
-#                         ])
+@app.delete("/", name="Delete Text", tags=["DELETE TEXT"])
+async def delete_text(item: int = Depends(services.get_text_for_delete)):
+    async with get_session() as session:
+        text = await session.get(TextDB, item)
+        if not text:
+            raise HTTPException(status_code=404, detail="DB Empty")
+        await session.delete(text)
+        await session.commit()
+        return {"ok": True}
