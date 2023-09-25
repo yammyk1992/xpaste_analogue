@@ -1,5 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy import select
+from fastapi import FastAPI, Depends, HTTPException, Request
 from starlette.responses import JSONResponse
 
 import models
@@ -12,25 +11,27 @@ app = FastAPI(title="APP TEXT", description="APP with ADD Text")
 
 
 @app.get("/", tags=["GET TEXT"])
-async def get_last_text():
+async def get_last_text(request: Request):
     data = get_text()
     return JSONResponse([
                             {
                                 "text_id": t.text_id,
                                 "text": t.text,
                                 "created_at": str(t.created_at)
+
                             }
                             async for t in data
                         ])
 
 
 @app.post("/", name="Post Text", tags=["CREATE TEXT"])
-async def add_text(item: TextForPOST):
+async def add_text(item: TextForPOST, request: Request):
     get_text = await post_text(TextDB(text=item.text, salt=models.get_salt()))
     return JSONResponse({
         "id": get_text.text_id,
         "text": get_text.text,
-        "created_at": str(get_text.created_at)
+        "created_at": str(get_text.created_at),
+        "url": str(request.url)
     })
 
 
