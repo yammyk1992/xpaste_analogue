@@ -1,6 +1,6 @@
 import random
 import string
-from typing import AsyncIterator, Collection, Container
+from typing import AsyncIterator
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -50,13 +50,13 @@ def get_password():
 def hash_with_salt(salt, data):
     hash_and_salt = PBKDF2HMAC(
         algorithm=hashes.SHA512(),
-        length=32,  # 64 bytes = 512 bits
+        length=64,  # 64 bytes = 512 bits
         salt=salt.encode("utf-8"),
         iterations=100000,
         backend=default_backend()
     )
 
-    key = hash_and_salt.derive(get_password().encode("utf-8"))
+    key = hash_and_salt.derive(data.encode("utf-8"))
 
     cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
     encryptor = cipher.encryptor()

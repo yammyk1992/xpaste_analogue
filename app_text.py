@@ -10,8 +10,8 @@ from database import Text as TextDB, get_session
 app = FastAPI(title="APP TEXT", description="APP with ADD Text")
 
 
-@app.get("/", tags=["GET TEXT"])
-async def get_last_text(request: Request):
+@app.get("get_text/", tags=["GET TEXT"])
+async def get_last_text():
     data = get_text()
     return JSONResponse([
                             {
