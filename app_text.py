@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import FastAPI, Depends, HTTPException, Request
 from starlette.responses import JSONResponse
 
@@ -25,13 +27,11 @@ async def get_last_text():
 
 
 @app.post("/", name="Post Text", tags=["CREATE TEXT"])
-async def add_text(item: TextForPOST, request: Request):
-    get_text = await post_text(TextDB(text=item.text, salt=models.get_salt()))
+async def add_text(text_to_db: TextForPOST):
+    get_text = await post_text(text_to_db)
     return JSONResponse({
-        "id": get_text.text_id,
-        "text": get_text.text,
-        "created_at": str(get_text.created_at),
-        "url": str(request.url)
+        "uuid": str(get_text.id),
+        "key_with_salt": get_text.key_with_salt
     })
 
 

@@ -1,7 +1,7 @@
+import uuid
 from datetime import datetime
 from contextlib import asynccontextmanager
-
-from sqlalchemy import DateTime, String, Column, Integer
+from sqlalchemy import DateTime, String, Column, UUID
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from config import POSTGRES_USER, POSTGRES_PASS, DB_PORT, DB_HOST, DB_NAME
@@ -21,10 +21,9 @@ class Text(Base):
 
     __tablename__ = "text_create"
 
-    text_id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True)
     text = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    salt = Column(String, nullable=True, default="")
+    key_with_salt = Column(String, nullable=False, default="")
 
 
 # Теперь мы можем создать экземпляр AsyncSession и использовать его в нашем коде.
