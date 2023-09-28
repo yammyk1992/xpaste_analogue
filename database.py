@@ -17,12 +17,11 @@ Base = declarative_base()
 
 
 class Text(Base):
-
     __tablename__ = "text_create"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True)
     text = Column(String(255), nullable=False)
-    salt = Column(String, nullable=False, default="")
+    salt = Column(String, nullable=False)
 
 
 # Теперь мы можем создать экземпляр AsyncSession и использовать его в нашем коде.

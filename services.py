@@ -1,11 +1,10 @@
 import uuid
-from typing import AsyncIterator, Collection
 
 import bcrypt
 from sqlalchemy import select
 
 import main
-from database import get_session, Text as TextDB, engine, Text
+from database import get_session, Text as TextDB, Text
 
 
 async def post_text(get_text):
@@ -23,7 +22,6 @@ async def post_text(get_text):
 
 
 async def get_text(text_id):
-    print(text_id, "TEEEEEEEEEEXT ID")
     async with get_session() as session:
         query = await session.execute(select(Text).where(Text.id == f"{text_id}"))
         text_db = query.scalars().all()
