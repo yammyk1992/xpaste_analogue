@@ -9,4 +9,4 @@ class TextForPOST(BaseModel):
 
 class TextForGET(TextForPOST):
     id: Union[int, str, UUID]
-    key_with_salt: Optional[str] = None
+    salt: Optional[str] = None
