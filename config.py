@@ -1,12 +1,15 @@
-from dotenv import load_dotenv
-import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv()
 
-POSTGRES_USER = os.environ.get('POSTGRES_USER')
-POSTGRES_PASS = os.environ.get('POSTGRES_PASS')
-DB_HOST = os.environ.get('DB_HOST')
-DB_PORT = os.environ.get('DB_PORT')
-DB_NAME = os.environ.get('DB_NAME')
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', case_sensitive=False)
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+    postgres_user: str = "user"
+    postgres_pass: str = "pass"
+    db_host: str = "db"
+    db_port: int = 1111
+    db_name: str = "name"
+    secret_key: str = "secret"
+
+
+settings = Settings()

@@ -3,9 +3,10 @@ from contextlib import asynccontextmanager
 from sqlalchemy import String, Column, UUID
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from config import POSTGRES_USER, POSTGRES_PASS, DB_PORT, DB_HOST, DB_NAME
+from config import settings
 
-engine = create_async_engine(f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}",
+engine = create_async_engine(f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_pass}@{settings.db_host}"
+                             f":{settings.db_port}/{settings.db_name}",
                              echo=True, future=True)
 
 

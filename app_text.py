@@ -35,6 +35,7 @@ async def add_text(text_to_db: TextForPOST):
         "uuid": str(text.id)
     })
 
+
 # @app.delete("/", name="Delete Text", tags=["DELETE TEXT"])
 # async def delete_text(item: int = Depends(services.get_text_for_delete)):
 #     async with get_session() as session:
