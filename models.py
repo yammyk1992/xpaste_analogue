@@ -8,5 +8,5 @@ class TextForPOST(BaseModel):
 
 
 class TextForGET(TextForPOST):
-    id: Union[int, str, UUID]
+    text_uuid: Union[int, str, UUID]
     salt: Optional[str] = None

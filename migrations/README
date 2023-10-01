@@ -1,1 +1,10 @@
 Generic single-database configuration with an async dbapi.
+
+Create a new database command:
+alembic revision --autogenerate -m "Database Creation"
+
+Update the last version:
+alembic upgrade head
+
+Running app:
+uvicorn --reload app_text:app

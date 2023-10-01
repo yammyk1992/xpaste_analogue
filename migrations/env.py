@@ -1,25 +1,20 @@
 import asyncio
 from logging.config import fileConfig
-
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
 from alembic import context
-
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
 import database
-from config import DB_HOST, POSTGRES_USER, DB_PORT, DB_NAME, POSTGRES_PASS
+from config import settings
 
 config = context.config
 
 section = config.config_ini_section
-config.set_section_option(section, "DB_HOST", DB_HOST)
-config.set_section_option(section, "DB_PORT", DB_PORT)
-config.set_section_option(section, "POSTGRES_USER", POSTGRES_USER)
-config.set_section_option(section, "DB_NAME", DB_NAME)
-config.set_section_option(section, "POSTGRES_PASS", POSTGRES_PASS)
+config.set_section_option(section, "DB_HOST", settings.db_host)
+config.set_section_option(section, "DB_PORT", settings.db_port)
+config.set_section_option(section, "POSTGRES_USER", settings.postgres_user)
+config.set_section_option(section, "DB_NAME", settings.db_name)
+config.set_section_option(section, "POSTGRES_PASS", settings.postgres_pass)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

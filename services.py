@@ -1,29 +1,30 @@
 import uuid
-
 import bcrypt
+from database import Text as TextDB, Text, get_session
+import main
 from sqlalchemy import select
 
-import main
-from database import get_session, Text as TextDB, Text
+from models import TextForPOST
 
 
-async def post_text(input_text):
+async def post_text(input_text: TextForPOST) -> str:
     async with get_session() as session:
         get_uuid = uuid.uuid4()
         salt = bcrypt.gensalt().decode('utf-8')
         data = main.encrypt_data(salt, input_text.text)
-        text_db_instance = TextDB(id=get_uuid, text=data,
+        text_db_instance = TextDB(text_uuid=get_uuid, text=data,
                                   salt=salt)
 
         session.add(text_db_instance)
         await session.commit()
         await session.refresh(text_db_instance)
-        return text_db_instance
+        return text_db_instance.text_uuid
 
 
-async def get_text(text_id):
-    async with get_session() as s:
-        query = await s.execute(select(Text).where(Text.id == f"{text_id}"))
+async def get_text(text_id: str) -> str | None:
+    async with get_session() as session:
+        query = await session.execute(select(Text).
+                                      where(Text.text_uuid == f"{text_id}"))
         text_db = query.scalars().all()
         if text_db:
             for i in text_db:
@@ -31,11 +32,11 @@ async def get_text(text_id):
         return None
 
 
-async def get_text_for_delete():
-    async with get_session() as session:
-        query = await session.execute(select(TextDB.text_id))
-        text_db = query.scalars().all()
-        if len(text_db) > 0:
-            return text_db[-1]
-        else:
-            return 0
+# async def get_text_for_delete():
+#     async with get_session() as session:
+#         query = await session.execute(select(TextDB.text_id))
+#         text_db = query.scalars().all()
+#         if len(text_db) > 0:
+#             return text_db[-1]
+#         else:
+#             return 0
