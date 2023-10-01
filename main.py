@@ -17,4 +17,3 @@ def decrypt_data(salt, encrypted_data):
     cipher = Fernet(cipher_key)
     text = cipher.decrypt(encrypted_data)
     return text
-

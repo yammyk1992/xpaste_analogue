@@ -7,11 +7,11 @@ import main
 from database import get_session, Text as TextDB, Text
 
 
-async def post_text(get_text):
+async def post_text(input_text):
     async with get_session() as session:
-        get_uuid = uuid.uuid4()  # generate uuid4
-        salt = bcrypt.gensalt().decode('utf-8')  # salt generate
-        data = main.encrypt_data(salt, get_text.text)
+        get_uuid = uuid.uuid4()
+        salt = bcrypt.gensalt().decode('utf-8')
+        data = main.encrypt_data(salt, input_text.text)
         text_db_instance = TextDB(id=get_uuid, text=data,
                                   salt=salt)
 
@@ -22,8 +22,8 @@ async def post_text(get_text):
 
 
 async def get_text(text_id):
-    async with get_session() as session:
-        query = await session.execute(select(Text).where(Text.id == f"{text_id}"))
+    async with get_session() as s:
+        query = await s.execute(select(Text).where(Text.id == f"{text_id}"))
         text_db = query.scalars().all()
         if text_db:
             for i in text_db:
