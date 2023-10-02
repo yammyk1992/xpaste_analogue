@@ -1,18 +1,34 @@
-from cryptography.fernet import Fernet
+import uuid
+import bcrypt
 
-from api.db.settings import settings
+from sqlalchemy import select
+
+from api.db.database import get_session
+from api.db.models import Text, Text as TextDB
+from api.schemas import TextForPOST
+from api.views.data_encription import encrypt_data, decrypt_data
 
 
-def encrypt_data(salt: str, data: str) -> str:
-    cipher_key = settings.secret_key + salt
-    cipher = Fernet(cipher_key)
-    encrypted_text = cipher.encrypt(data.encode('utf-8'))
-    return encrypted_text.decode('utf-8')
+async def post_text(input_text: TextForPOST) -> str:
+    async with get_session() as session:
+        get_uuid = uuid.uuid4()
+        salt = bcrypt.gensalt().decode('utf-8')
+        data = encrypt_data(salt, input_text.text)
+        text_db_instance = TextDB(text_uuid=get_uuid, text=data,
+                                  salt=salt)
+
+        session.add(text_db_instance)
+        await session.commit()
+        await session.refresh(text_db_instance)
+        return text_db_instance.text_uuid
 
 
-# Дешифруем
-def decrypt_data(salt: str, encrypted_data: bytes) -> str:
-    cipher_key = settings.secret_key + salt
-    cipher = Fernet(cipher_key)
-    text = cipher.decrypt(encrypted_data).decode('utf-8')
-    return text
+async def get_text(text_id: str) -> str | None:
+    async with get_session() as session:
+        query = await session.execute(select(Text).
+                                      where(Text.text_uuid == f"{text_id}"))
+        text_db = query.scalars().all()
+        if text_db:
+            for i in text_db:
+                return decrypt_data(i.salt, i.text)
+        return None

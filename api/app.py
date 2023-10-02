@@ -2,23 +2,28 @@ from fastapi import FastAPI
 
 from starlette.responses import JSONResponse
 
-from api.schemas.schemas import TextForPOST
-from api.views.service import get_text, post_text
+from api.router.router import data_router, create_data
+from api.schemas import TextForPOST
+from api.views.utils import get_text, post_text
 
-app = FastAPI(title="APP TEXT", description="APP with ADD Text")
+app = FastAPI(title="Xpaste application")
 
 
-@app.get("/{uuid}", tags=["GET TEXT"])
-async def get_text_with_uuid(uuid: str) -> JSONResponse:
-    data = await get_text(uuid)
+@data_router.get("/{token}")
+async def get_data(token: str) -> JSONResponse:
+    data = await get_text(token)
     return JSONResponse({
-        "schemas": str(data),
+        "data": str(data),
     })
 
 
-@app.post("/", name="Post Text", tags=["CREATE TEXT"])
-async def add_text(text_to_db: TextForPOST) -> JSONResponse:
+@create_data.post("/")
+async def post_data(text_to_db: TextForPOST) -> JSONResponse:
     text = await post_text(text_to_db)
     return JSONResponse({
-        "uuid": str(text)
+        "token": str(text)
     })
+
+
+app.include_router(data_router)
+app.include_router(create_data)
