@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     postgres_user: str = "user"
     postgres_pass: str = "pass"
     db_host: str = "db"
-    db_port: str = 1111
+    db_port: str = "1111"
     db_name: str = "name"
     secret_key: str = "secret"
 

@@ -1,7 +1,9 @@
 from fastapi import FastAPI
-from models import TextForPOST
-from services import get_text, post_text
+
 from starlette.responses import JSONResponse
+
+from api.schemas.schemas import TextForPOST
+from api.views.service import get_text, post_text
 
 app = FastAPI(title="APP TEXT", description="APP with ADD Text")
 
@@ -10,7 +12,7 @@ app = FastAPI(title="APP TEXT", description="APP with ADD Text")
 async def get_text_with_uuid(uuid: str) -> JSONResponse:
     data = await get_text(uuid)
     return JSONResponse({
-        "text": str(data),
+        "schemas": str(data),
     })
 
 

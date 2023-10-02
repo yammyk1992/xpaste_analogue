@@ -1,8 +1,8 @@
-from config import settings
 from cryptography.fernet import Fernet
 
+from api.db.settings import settings
 
-# Шифруем
+
 def encrypt_data(salt: str, data: str) -> str:
     cipher_key = settings.secret_key + salt
     cipher = Fernet(cipher_key)

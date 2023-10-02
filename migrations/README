@@ -8,3 +8,6 @@ alembic upgrade head
 
 Running app:
 uvicorn --reload app_text:app
+
+Check current connection to PostgreSQL:
+alembic current
