@@ -1,6 +1,6 @@
 from cryptography.fernet import Fernet
 
-from api.db.settings import settings
+from api.settings import settings
 
 
 def encrypt_data(salt: str, data: str) -> str:

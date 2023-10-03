@@ -8,8 +8,8 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from api.db import database
-from api.db.settings import settings
+from db import database
+from api.settings import settings
 
 sys.path.append(os.path.join(sys.path[0], "api"))
 

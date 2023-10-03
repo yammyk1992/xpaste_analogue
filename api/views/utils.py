@@ -3,9 +3,9 @@ import uuid
 import bcrypt
 from sqlalchemy import select
 
-from api.db.database import get_session
-from api.db.models import Text
-from api.db.models import Text as TextDB
+from db.database import get_session
+from db.models import Text
+from db.models import Text as TextDB
 from api.schemas import TextForPOST
 from api.views.data_encription import decrypt_data, encrypt_data
 

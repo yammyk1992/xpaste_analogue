@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import declarative_base
 
-from api.db.settings import settings
+from api.settings import settings
 
 engine = create_async_engine(
     f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_pass}@{settings.db_host}:"

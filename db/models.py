@@ -2,7 +2,7 @@ import uuid
 
 from sqlalchemy import UUID, Column, String
 
-from api.db.database import Base
+from db.database import Base
 
 
 class Text(Base):
