@@ -8,13 +8,12 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from db import database
+from db import models
 from api.settings import settings
 
 sys.path.append(os.path.join(sys.path[0], "api"))
 
 config = context.config
-
 section = config.config_ini_section
 config.set_section_option(section, "DB_HOST", settings.db_host)
 config.set_section_option(section, "DB_PORT", settings.db_port)
@@ -31,7 +30,8 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = database.Base.metadata
+target_metadata = models.Base.metadata
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
