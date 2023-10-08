@@ -1,25 +1,28 @@
 version: "3.0"
 services:
   db:
-    container_name: "db_app"
+    container_name: "NewDB"
     image: postgres:14.1-alpine
+    restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASS}
       - POSTGRES_DB=${DB_NAME}
-    command: -p 5433
+    command: -p 5432
     expose:
-      - 5433
+      - 5432
+
 
   web:
     build:
       context: .
-    command: uvicorn --reload api.app:app --host 0.0.0.0 --port 8000
+    command: sh -c "alembic upgrade head && uvicorn api.app:app --host 0.0.0.0 --port 8000 --reload"
+    restart: always
     volumes:
       - .:/app
     env_file:
       - .env
-    container_name: fastapi_app
+    container_name: "NewAPP"
     ports:
       - 8010:8000
     depends_on:
