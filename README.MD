@@ -1,5 +1,5 @@
 Создания и запуск приложения в контейнере
 
-docker compose up --build
+docker compose up -d
 
 http://127.0.0.1:8010/docs
