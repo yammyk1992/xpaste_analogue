@@ -5,31 +5,32 @@ services:
     image: postgres:14.1-alpine
     restart: always
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASS}
-      - POSTGRES_DB=${DB_NAME}
-    command: -p 5432
-    expose:
-      - 5432
-
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5436:5432"
 
   web:
     build:
       context: .
-    command: sh -c "alembic upgrade head && uvicorn api.app:app --host 0.0.0.0 --port 8000 --reload"
+    command: uvicorn api.app:app --host 0.0.0.0 --port 8000 --reload
     restart: always
     volumes:
       - .:/app
-    env_file:
-      - .env
+    environment:
+      - SECRET_KEY=_wCCQ6Zg4FGrn34Dm2_RPtlUf4wN5H5jB_1Uww--lcg=
     container_name: "NewAPP"
     ports:
       - 8010:8000
     depends_on:
       - db
-volumes:
-  postgres_data:
+      - migration
 
-networks:
-  custom:
-    driver: bridge
+  migration:
+    build:
+      context: .
+    restart: always
+    command: alembic upgrade head
+    depends_on:
+      - db
