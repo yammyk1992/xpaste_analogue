@@ -1,25 +1,14 @@
 import asyncio
-import os
-import sys
 from logging.config import fileConfig
+from sqlalchemy.engine import Connection
 
 from alembic import context
-from sqlalchemy import pool
-from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config
+from sqlalchemy.ext.asyncio import create_async_engine
 
-from db import models
-from api.settings import settings
-
-sys.path.append(os.path.join(sys.path[0], "api"))
+from db.database import Base
+from db.settings import settings
 
 config = context.config
-section = config.config_ini_section
-config.set_section_option(section, "DB_HOST", settings.db_host)
-config.set_section_option(section, "DB_PORT", settings.db_port)
-config.set_section_option(section, "POSTGRES_USER", settings.postgres_user)
-config.set_section_option(section, "DB_NAME", settings.db_name)
-config.set_section_option(section, "POSTGRES_PASS", settings.postgres_pass)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -30,13 +19,14 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = models.Base.metadata
-
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+section = config.config_ini_section
+config.set_section_option(section, "DATABASE_URL", settings.DATABASE_URL)
 
 
 def run_migrations_offline() -> None:
@@ -76,11 +66,7 @@ async def run_async_migrations() -> None:
 
     """
 
-    connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    connectable = create_async_engine(settings.DATABASE_URL)
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

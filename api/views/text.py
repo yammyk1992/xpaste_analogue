@@ -6,8 +6,8 @@ from sqlalchemy import select
 from db.database import get_session
 from db.models import Text
 from db.models import Text as TextDB
-from api.schemas import TextForPOST
-from api.views.data_encription import decrypt_data, encrypt_data
+from api.schemas.xpaste import TextForPOST
+from api.service.data_encription import decrypt_data, encrypt_data
 
 
 async def post_text(input_text: TextForPOST) -> str:

@@ -11,3 +11,15 @@ uvicorn --reload app_text:app
 
 Check current connection to PostgreSQL:
 alembic current
+
+История выполнения миграций
+alembic history
+
+Откатиться на одну миграцию назад
+alembic downgrade -1
+
+Откатиться к миграции <guid>
+alembic downgrade <guid>
+
+Откатиться к самому началу
+alembic downgrade base

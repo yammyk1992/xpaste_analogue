@@ -3,14 +3,12 @@ from contextlib import asynccontextmanager
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import declarative_base
 
-from api.settings import settings
+from db.settings import settings
 
-engine = create_async_engine(
-    f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_pass}@{settings.db_host}:"
-    f"{settings.db_port}/{settings.db_name}",
-    echo=True,
-    future=True,
-)
+engine = create_async_engine(settings.DATABASE_URL,
+                             echo=True,
+                             future=True,
+                             )
 
 
 def async_session_generator():

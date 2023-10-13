@@ -1,14 +1,13 @@
 from fastapi import FastAPI
 from starlette.responses import JSONResponse
 
-from api.router.router import create_data, data_router
-from api.schemas import TextForPOST
-from api.views.utils import get_text, post_text
+from api.schemas.xpaste import TextForPOST
+from api.views.text import get_text, post_text
 
 app = FastAPI(title="Xpaste application")
 
 
-@data_router.get("/{token}")
+@app.get("/data/{token}", tags=["Get data"])
 async def get_data(token: str) -> JSONResponse:
     data = await get_text(token)
     return JSONResponse(
@@ -18,7 +17,7 @@ async def get_data(token: str) -> JSONResponse:
     )
 
 
-@create_data.post("/")
+@app.post("/create/", tags=["Add data"])
 async def post_data(text_to_db: TextForPOST) -> JSONResponse:
     text = await post_text(text_to_db)
     return JSONResponse(
@@ -28,5 +27,3 @@ async def post_data(text_to_db: TextForPOST) -> JSONResponse:
     )
 
 
-app.include_router(data_router)
-app.include_router(create_data)
