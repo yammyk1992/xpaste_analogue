@@ -1,5 +1,11 @@
 Создания и запуск приложения в контейнере
 
+Запуск приложения одной командой!
+docker compose up
+
+http://127.0.0.1:8011/docs
+
+
 Создание networking
 docker network create xpaste
 
@@ -24,6 +30,5 @@ docker run \
     -e DATABASE_URL=postgresql+asyncpg://postgres:postgres@xpaste:5432/postgres \
     --network xpaste \
     -dp 8012:80 new-app
-
 
 http://127.0.0.1:8012/docs
