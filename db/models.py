@@ -14,5 +14,5 @@ class Text(Base):
     )
     text = Column(String(255), nullable=False)
     salt = Column(String, nullable=False)
-    death_token = Column(Boolean(create_constraint=True), default=False)
+    death_token = Column(Boolean(create_constraint=True, name="death_token"), default=False)
     created_at = Column(DateTime, default=datetime.utcnow)

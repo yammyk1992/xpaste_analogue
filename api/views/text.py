@@ -28,10 +28,11 @@ async def post_text(input_text: TextForPOST) -> List:
         await session.refresh(text_db_instance)
 
         if text_db_instance.death_token:
-            clean_data_after_24_hours.apply_async(eta=datetime.utcnow() + timedelta(hours=24))
+            # Celery task
+            clean_data_after_24_hours.apply_async(eta=datetime.utcnow() + timedelta(seconds=10))
             return [text_db_instance.text_uuid, "expired after 24 hours"]
-
-        clean_data_after_3_days.apply_async(eta=datetime.utcnow() + timedelta(days=3))
+        # Celery task
+        clean_data_after_3_days.apply_async(eta=datetime.utcnow() + timedelta(seconds=10))
         return [text_db_instance.text_uuid, "expired after 3 days"]
 
 
