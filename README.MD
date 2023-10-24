@@ -2,9 +2,7 @@
 
 Запуск приложения одной командой!
 docker compose up
-
 http://127.0.0.1:8011/docs
-
 
 Создание networking
 docker network create xpaste

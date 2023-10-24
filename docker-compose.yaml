@@ -1,36 +1,36 @@
 version: "3.0"
 
 services:
-  web:
-    build:
-      context: .
-    command: uvicorn api.app:app --host 0.0.0.0 --port 8000 --reload
-    volumes:
-      - .:/app
-    environment:
-      - SECRET_KEY=_wCCQ6Zg4FGrn34Dm2_RPtlUf4wN5H5jB_1Uww--lcg=
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/postgres
-    ports:
-      - "8011:8000"
-    depends_on:
-      - db
-      - migrations
-
-  migrations:
-    build:
-      context: .
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; alembic upgrade head'
-    restart: "no"
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/postgres
-      - SECRET_KEY=_wCCQ6Zg4FGrn34Dm2_RPtlUf4wN5H5jB_1Uww--lcg=
-    depends_on:
-      - db
+#  web:
+#    build:
+#      context: .
+#    command: uvicorn api.app:app --host 0.0.0.0 --port 8000 --reload
+#    volumes:
+#      - .:/app
+#    environment:
+#      - SECRET_KEY=_wCCQ6Zg4FGrn34Dm2_RPtlUf4wN5H5jB_1Uww--lcg=
+#      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/postgres
+#    ports:
+#      - "8011:8000"
+#    depends_on:
+#      - db
+#      - migrations
+#
+#  migrations:
+#    build:
+#      context: .
+#    command: bash -c 'while !</dev/tcp/db/5432; do sleep 2; done; alembic upgrade head'
+#    restart: "no"
+#    environment:
+#      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/postgres
+#      - SECRET_KEY=_wCCQ6Zg4FGrn34Dm2_RPtlUf4wN5H5jB_1Uww--lcg=
+#    depends_on:
+#      - db
 
   db:
     image: postgres:14.3
     ports:
-      - "5440:5432"
+      - "5441:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

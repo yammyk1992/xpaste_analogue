@@ -1,6 +1,7 @@
 import uuid
+from datetime import datetime
 
-from sqlalchemy import UUID, Column, String
+from sqlalchemy import UUID, Column, String, Boolean, DateTime
 
 from db.database import Base
 
@@ -13,3 +14,5 @@ class Text(Base):
     )
     text = Column(String(255), nullable=False)
     salt = Column(String, nullable=False)
+    death_token = Column(Boolean(create_constraint=True), default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
