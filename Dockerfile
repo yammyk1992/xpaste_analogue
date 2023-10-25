@@ -11,6 +11,7 @@ COPY api ./api
 COPY db ./db
 COPY migrations ./migrations
 COPY alembic.ini ./
+COPY tasks ./tasks
 
 CMD ["uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "80"]
 
